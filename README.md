@@ -9,6 +9,7 @@ A comprehensive guide to run the Logos Blockchain Node v0.1.2 on Linux (includin
 - [Installation](#installation)
 - [Configuration](#configuration)
 - [Running the Node](#running-the-node)
+- [Restarting the Node](#restarting-the-node)
 - [Monitoring](#monitoring)
 - [Getting Testnet Funds](#getting-testnet-funds)
 - [Block Production](#block-production)
@@ -441,6 +442,101 @@ docker run -d \
   -p 8080:8080 \
   logos-blockchain:0.1.2 /app/user_config.yaml
 ```
+
+## 🔄 Restarting the Node
+
+When you restart your computer or need to restart the node, here are the commands based on your setup:
+
+### Systemd Service (Recommended & Auto-Start)
+
+```bash
+# Start the node
+sudo systemctl start logos-blockchain
+
+# Check if it's running
+sudo systemctl status logos-blockchain
+
+# View logs
+sudo journalctl -u logos-blockchain -f
+```
+
+**Enable auto-start on boot:**
+```bash
+sudo systemctl enable logos-blockchain
+```
+
+After rebooting your computer, the node will start automatically! ✅
+
+### Manual Startup (Foreground)
+
+```bash
+cd ~/logos-blockchain
+./logos-blockchain-node user_config.yaml
+```
+
+### Screen Session
+
+```bash
+# Create and attach to a new screen session
+screen -S logos-node
+
+# Run the node
+cd ~/logos-blockchain
+./logos-blockchain-node user_config.yaml
+
+# Detach: Press Ctrl+A then D
+
+# To reattach later:
+screen -r logos-node
+
+# List all sessions:
+screen -ls
+```
+
+### Tmux Session
+
+```bash
+# Create a new tmux session (runs in background)
+cd ~/logos-blockchain
+tmux new-session -d -s logos-node './logos-blockchain-node user_config.yaml'
+
+# To view it:
+tmux attach -t logos-node
+
+# Detach: Press Ctrl+B then D
+
+# List sessions:
+tmux list-sessions
+
+# Kill session:
+tmux kill-session -t logos-node
+```
+
+### Summary Table
+
+| Method | Auto-Start | Command | Pros | Cons |
+|--------|-----------|---------|------|------|
+| **Systemd** | ✅ Yes | `sudo systemctl start logos-blockchain` | Best for production, auto-restarts on failure | Requires setup |
+| **Foreground** | ❌ No | `./logos-blockchain-node user_config.yaml` | Simple, see logs directly | Must stay in terminal |
+| **Screen** | ❌ No | `screen -S logos-node` | Easy detach/reattach | Manual restart needed |
+| **Tmux** | ❌ No | `tmux new-session -d -s logos-node` | More features than screen | Manual restart needed |
+
+### My Recommendation
+
+Use **Systemd** for production setups:
+
+```bash
+# Enable auto-start on boot
+sudo systemctl enable logos-blockchain
+
+# Start now
+sudo systemctl start logos-blockchain
+
+# Check status
+sudo systemctl status logos-blockchain
+```
+
+Then after every computer restart, your node will automatically start! 🚀
 
 ## 📊 Monitoring
 
